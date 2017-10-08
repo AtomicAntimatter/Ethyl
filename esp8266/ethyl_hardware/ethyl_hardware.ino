@@ -22,7 +22,7 @@ const char* password = "***REMOVED***";
 #define USER_IN       D2
 
 // Output Definitions
-#define LED_R   D5
+#define LED_R   2
 #define LED_G   D6
 #define LED_B   D7
 
@@ -78,7 +78,7 @@ void setup()   {
   delay(500);
 
   // Set LED to RED to indicate setup start
-  set_LED(yellow);
+  set_LED(red);
 
   pinMode(REMOVED_IN, INPUT);
   delay(500);
@@ -107,12 +107,10 @@ void setup()   {
   connect();
 
   // Set LED to GREEN to indicate setup complete
-  set_LED(green);
+  set_LED(nothing);
 
-  // every minute set LED to RED
-  t.every(60*1000, set_red);
-  // every 10 seconds, publish stuff
-  t.every(10*1000, publish_stuff);
+  // every 4 seconds, publish stuff
+  t.every(4*1000, publish_stuff);
 }
 
 void loop() {
@@ -123,9 +121,15 @@ void loop() {
   t.update();
 
   // if the user didn't remove and is in contact
-  if (!digitalRead(REMOVED_IN) && digitalRead(USER_IN)) {
+  if (digitalRead(USER_IN)) {
     publish_breath();
     delay(500);
+  }
+
+  if (digitalRead(REMOVED_IN)) {
+    set_LED(red);
+  } else {
+    set_LED(nothing);
   }
 }
 
